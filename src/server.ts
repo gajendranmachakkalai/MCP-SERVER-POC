@@ -22,6 +22,9 @@ async function main(){
     
     const app = express();
     app.use(express.json());
+    
+    app.get("/healthcheck", (_req, res) => res.send("MCP Server is running!"));
+    
     app.post("/mcp", async (req, res) => {
         const transport = new StreamableHTTPServerTransport({
             sessionIdGenerator: undefined,
