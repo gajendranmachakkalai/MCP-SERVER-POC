@@ -9,9 +9,6 @@ export function registerTools(server: McpServer) {
   {
     title: "Get Employees",
     description: "Fetches a list of all employees from the Employee API.",
-    // outputSchema: {
-    //     employees: z.array(EmployeeSchema),
-    // },
     outputSchema: EmployeeListSchema.shape,
   },
   async () => {
