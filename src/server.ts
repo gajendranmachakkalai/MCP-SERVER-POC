@@ -4,6 +4,7 @@ import { registerTools } from "./server/tools";
 import express from "express";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import dotenv from "dotenv";
 
 async function main(){
     const server = new McpServer({
@@ -18,6 +19,7 @@ async function main(){
         streamable: {} as Record<string, StreamableHTTPServerTransport>,
         sse: {} as Record<string, SSEServerTransport>,
     }
+    
     const app = express();
     app.use(express.json());
     app.post("/mcp", async (req, res) => {
@@ -52,8 +54,9 @@ async function main(){
             res.status(400).send("No transport found for the given sessionId");
         }
     });
-
-    const port = 3000;
+    
+    dotenv.config(); 
+    const port = process.env.PORT || 4000;
     app.listen(port, () => {
         console.log(`MCP Server is running on http://localhost:${port}/mcp`);
     });
