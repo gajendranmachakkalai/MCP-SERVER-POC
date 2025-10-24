@@ -2,8 +2,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { registerTools } from "./server/tools";
 import express from "express";
-import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+// import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+// import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import dotenv from "dotenv";
 
 async function main(){
@@ -12,13 +12,13 @@ async function main(){
         version: "1.0.0",
     });
     registerTools(server);
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
+    // const transport = new StdioServerTransport();
+    // await server.connect(transport);
 
-    const transports = {
-        streamable: {} as Record<string, StreamableHTTPServerTransport>,
-        sse: {} as Record<string, SSEServerTransport>,
-    }
+    // const transports = {
+    //     streamable: {} as Record<string, StreamableHTTPServerTransport>,
+    //     sse: {} as Record<string, SSEServerTransport>,
+    // }
     
     const app = express();
     app.use(express.json());
@@ -36,25 +36,25 @@ async function main(){
         await transport.handleRequest(req, res, req.body);
     });
 
-    app.get("/sse", async (_req, res) => {
-        const transport = new SSEServerTransport("/message", res);
-        transports.sse[transport.sessionId] = transport;
-        res.on("close", () => {
-            delete transports.sse[transport.sessionId];
-        });
-        await server.connect(transport);
-    });
+    // app.get("/sse", async (_req, res) => {
+    //     const transport = new SSEServerTransport("/message", res);
+    //     transports.sse[transport.sessionId] = transport;
+    //     res.on("close", () => {
+    //         delete transports.sse[transport.sessionId];
+    //     });
+    //     await server.connect(transport);
+    // });
 
-    app.post("/message", async (req, res) => {
-        const sessionId = req.query.sessionId as string;
-        const transport = transports.sse[sessionId];
-        if (transport) {
-            await transport.handlePostMessage(req, res, req.body);
-        } else {
-            res.status(400).send("No transport found for the given sessionId");
-        }
-    });
-    
+    // app.post("/message", async (req, res) => {
+    //     const sessionId = req.query.sessionId as string;
+    //     const transport = transports.sse[sessionId];
+    //     if (transport) {
+    //         await transport.handlePostMessage(req, res, req.body);
+    //     } else {
+    //         res.status(400).send("No transport found for the given sessionId");
+    //     }
+    // });
+
     dotenv.config(); 
     const port = process.env.PORT || 4000;
     app.listen(port, () => {
