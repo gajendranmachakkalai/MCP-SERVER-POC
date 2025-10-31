@@ -5,6 +5,7 @@ import express from "express";
 // import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 // import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import dotenv from "dotenv";
+import { randomUUID } from "crypto";
 
 async function main(){
     const server = new McpServer({
@@ -27,7 +28,7 @@ async function main(){
     
     app.post("/mcp", async (req, res) => {
         const transport = new StreamableHTTPServerTransport({
-            sessionIdGenerator: undefined,
+            sessionIdGenerator: () => randomUUID(),
             enableJsonResponse: true,
         });
 
